@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Pecha Kucha</title>
+</head>
+<body>
+	<div id="gradientMaskTop"></div>
+	<div id="textContainerTop">
+		<div id="main-text">Test</div>
+		<div id="sub-text">Sub Test</div>
+	</div>
+	<div id="gradientMaskBottom"></div>
+	<div id="link-text"></div>
+	<div id="timer"></div>	
+</body>
+
+<script type="text/javascript" src="jquery-3.1.1.min.js" ></script>
+<script type="text/javascript" src="slides.js" ></script>
+<script type="text/javascript">
+
+	var i = 0;
+	var state = "paused";
+	var interval = 3;
+	var secondsOnScreen = 0;
+
+	$(function() {
+
+		//i = slides.length - 1;
+		start();
+		
+		function start() {
+			state = "playing";
+			showSlide(i);
+			setTimeout(tick, 1000);
+		}
+
+		function tick() {
+			console.log("tick");
+			secondsOnScreen++;
+			$("#timer").text(interval - secondsOnScreen);
+			if (secondsOnScreen >= interval) {
+				nextSlide();	
+			}
+
+			if (state == "playing") {
+				setTimeout(tick, 1000);
+			}
+		}
+
+		function prevSlide() {
+			if (i > 0){
+				i--;
+			}else{
+				i = slides.length - 1
+			}
+
+			showSlide(i);
+		}
+
+		function nextSlide() {
+
+			if (slides.length > (i + 1)){
+				i++;
+			}else{
+				i = 0;
+			}
+
+			showSlide(i);
+		}
+
+		function showSlide(idx){
+			
+			secondsOnScreen = 0;
+			$("#timer").text(interval - secondsOnScreen);
+			$("html").css('background-image', "url(im/"+ slides[idx]["image"] +")");
+			$("#main-text").text(slides[idx]["title"]);
+			$("#sub-text").text(slides[idx]["description"]);
+			$("#link-text").html("<a target='_blank' href='" + slides[idx]["link"] +"'>" + slides[idx]["link"] + "</a>");
+			
+		}
+
+		$('body').bind('keypress', function(e) {
+			var code = e.keyCode || e.which;
+			console.log(code);
+			if(code == 44) {
+				prevSlide();
+			}
+			if(code == 46) {
+				nextSlide();
+			}
+			if(code == 32) {
+				if(state == "playing") {
+					state = "paused";
+				}else if(state == "paused") {
+					state = "playing";
+					setTimeout(tick, 1000);
+				}
+				console.log(state);
+			}
+		});
+	});
+</script>
+
+<style type="text/css">
+	html { 
+		font-family: "Helvetica";
+		color: #FFFFFF;
+		padding: 0px;
+		margin: 0px;
+	  background: url(im/bg-default.png)  no-repeat center center fixed; 
+	  -webkit-background-size: cover;
+	  -moz-background-size: cover;
+	  -o-background-size: cover;
+	  background-size: cover;
+	  background-color: #4A2E88;
+	}
+
+	#gradientMaskTop {
+		padding: 0px;
+		margin: 0px;
+		position: absolute;
+		top: 0px;
+		width: 100%;
+		height: 350px;
+		background: -moz-linear-gradient(top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.63) 54%, rgba(0,0,0,0) 100%); /* FF3.6-15 */
+		background: -webkit-linear-gradient(top, rgba(0,0,0,0.85) 0%,rgba(0,0,0,0.63) 54%,rgba(0,0,0,0) 100%); /* Chrome10-25,Safari5.1-6 */
+		background: linear-gradient(to bottom, rgba(0,0,0,0.85) 0%,rgba(0,0,0,0.63) 54%,rgba(0,0,0,0) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a6000000', endColorstr='#00000000',GradientType=0 );
+	}
+
+	#gradientMaskBottom {
+		position: absolute;
+		bottom: 0px;
+		width: 100%;
+		height: 250px;
+		background: -moz-linear-gradient(bottom, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.43) 34%, rgba(0,0,0,0) 100%); /* FF3.6-15 */
+		background: -webkit-linear-gradient(bottom, rgba(0,0,0,0.65) 0%,rgba(0,0,0,0.43) 34%,rgba(0,0,0,0) 100%); /* Chrome10-25,Safari5.1-6 */
+		background: linear-gradient(to top, rgba(0,0,0,0.65) 0%,rgba(0,0,0,0.43) 34%,rgba(0,0,0,0) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a6000000', endColorstr='#00000000',GradientType=0 );
+	}
+
+	#textContainerTop {
+		top: 0px;
+		position: absolute;
+		padding: 50px;
+	}
+
+	#main-text {
+		font-size: 48px;
+	}
+
+	#sub-text {
+		font-size: 28px;
+		margin-top: 20px;
+	}
+
+	#timer {
+		font-size: 124px;
+		padding: 50px;
+		position: absolute;
+		right: 0px;
+		bottom: 0px;
+	}
+
+	#link-text {
+		position: absolute;
+		bottom: 0px;
+		padding: 50px;
+	}
+
+	a:link, a:visited {
+		color: #FFFFFF;
+	}
+
+</style>
+</html>
